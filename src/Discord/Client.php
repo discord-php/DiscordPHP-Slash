@@ -1,18 +1,24 @@
 <?php
 
-namespace Discord\SlashCommands;
+namespace Discord\Slash;
 
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Psr\Http\Message\ServerRequestInterface;
 use React\EventLoop\Factory;
 use React\EventLoop\LoopInterface;
-use GuzzleHttp\Client as HttpClient;
 use React\Http\Server as HttpServer;
 use React\Promise\Deferred;
 use React\Socket\Server as SocketServer;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+/**
+ * The Client class acts as an HTTP web server to handle requests from Discord when a command
+ * is triggered. The class can also be used as a request handler by mocking a ServerRequestInterface
+ * to allow it to be used with another webserver such as Apache or nginx.
+ *
+ * @author David Cole <david.cole1340@gmail.com>
+ */
 class Client
 {
     const API_BASE_URI = "https://discord.com/api/v8/";
@@ -30,13 +36,6 @@ class Client
      * @var HttpServer
      */
     private $server;
-
-    /**
-     * HTTP client.
-     *
-     * @var Http
-     */
-    private $http;
 
     /**
      * Socket listening for connections.
@@ -67,7 +66,6 @@ class Client
                 'uri',
                 'logger',
                 'loop',
-                'token',
             ])
             ->setDefaults([
                 'uri' => '0.0.0.0:80',
@@ -78,18 +76,6 @@ class Client
 
         if (! isset($options['logger'])) {
             $options['logger'] = (new Logger('DiscordPHP/Slash'))->pushHandler(new StreamHandler('php://stdout'));
-        }
-
-        if (! isset($options['token'])) {
-            $options['logger']->warning('no token given - unable to register commands');
-        } else {
-            $this->http = new HttpClient([
-                'base_uri' => self::API_BASE_URI,
-                'headers' => [
-                    'User-Agent' => $this->getUserAgent(),
-                    'Authorization' => 'Bot '.$options['token'],
-                ],
-            ]);
         }
 
         return $options;
@@ -111,16 +97,6 @@ class Client
         $deferred = new Deferred();
 
         return $deferred->promise();
-    }
-
-    /**
-     * Returns the User-Agent of the application.
-     *
-     * @return string
-     */
-    private function getUserAgent()
-    {
-        return "DiscordBot (https://github.com/davidcole1340/DiscordPHP-Slash, v0.0.1)";
     }
 
     /**

@@ -19,5 +19,8 @@
         "psr-4": {
             "Discord\\Slash\\": "src/Discord"
         }
+    },
+    "require-dev": {
+        "symfony/var-dumper": "^5.2"
     }
 }
