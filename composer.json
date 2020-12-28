@@ -1,0 +1,23 @@
+{
+    "name": "discordphp/slash",
+    "description": "HTTP server for Discord slash commands",
+    "type": "library",
+    "license": "GPL-3.0-or-later",
+    "authors": [
+        {
+            "name": "David Cole",
+            "email": "david.cole1340@gmail.com"
+        }
+    ],
+    "require": {
+        "react/http": "^1.2",
+        "symfony/options-resolver": "^5.2",
+        "monolog/monolog": "^2.2",
+        "guzzlehttp/guzzle": "^7.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Discord\\Slash\\": "src/Discord"
+        }
+    }
+}
