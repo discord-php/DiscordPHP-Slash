@@ -24,5 +24,8 @@
     },
     "require-dev": {
         "symfony/var-dumper": "^5.2"
+    },
+    "suggest": {
+        "kambo/httpmessage": "Required for hosting the command server behind a CGI/FPM server."
     }
 }

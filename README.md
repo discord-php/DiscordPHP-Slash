@@ -70,8 +70,8 @@ Now that you have registered commands, you can set up an HTTP server to listen f
 
 There are a few ways to set up an HTTP server to listen for requests:
 - The built-in ReactPHP HTTP server.
-- Using an external HTTP server such as Apache or nginx (documentation to come).
-- Using the built-in ReactPHP HTTP server without HTTPS and using Apache or nginx as a reverse proxy.
+- Using an external HTTP server such as Apache or nginx.
+- Using the built-in ReactPHP HTTP server without HTTPS and using Apache or nginx as a reverse proxy (recommended).
 
 Whatever path you choose, the server **must** be protected with HTTPS - Discord will not accept regular HTTP.
 
@@ -156,6 +156,37 @@ $client->registerCommand('my_cool_command', function (Interaction $interaction, 
 
 $discord->run();
 ```
+
+### Running behing PHP-CGI/PHP-FPM
+
+To run behind CGI/FPM and a webserver, the `kambo/httpmessage` package is required:
+
+```sh
+$ composer require kambo/httpmessage
+```
+
+The syntax is then exactly the same as if you were running with the ReactPHP http server, except for the last line:
+
+```php
+<?php
+
+include 'vendor/autoload.php';
+
+use Discord\Slash\Client;
+
+$client = new Client([
+    'public_key' => '???????',
+    'uri' => null, // note the null uri - signifies to not register the socket
+]);
+
+// register your commands like normal
+$client->registerCommand(...);
+
+// note the difference here - runCgi instead of run
+$client->runCgi();
+```
+
+Do note that the regular DiscordPHP client will not run on CGI or FPM, so your mileage may vary.
 
 ### Setting up Apache2 as a reverse proxy
 

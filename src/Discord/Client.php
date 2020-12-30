@@ -7,8 +7,11 @@ use Discord\InteractionResponseType;
 use Discord\InteractionType;
 use Discord\Slash\Parts\Interaction;
 use Discord\Slash\Parts\RegisteredCommand;
+use Exception;
 use InvalidArgumentException;
-use React\Http\MEssage\Response;
+use Kambo\Http\Message\Environment\Environment;
+use Kambo\Http\Message\Factories\Environment\ServerRequestFactory;
+use React\Http\Message\Response;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Psr\Http\Message\ServerRequestInterface;
@@ -116,14 +119,14 @@ class Client
      */
     private function registerServer()
     {
+        // no uri => cgi/fpm
+        if (is_null($this->options['uri'])) {
+            return;
+        }
+
         $this->server = new HttpServer($this->getLoop(), [$this, 'handleRequest']);
         $this->socket = new SocketServer($this->options['uri'], $this->getLoop(), $this->options['socket_options']);
-
-        // future tick so that the socket won't listen
-        // when running in CGI mode
-        $this->getLoop()->futureTick(function () {
-            $this->server->listen($this->socket);
-        });
+        $this->server->listen($this->socket);
     }
 
     /**
@@ -138,7 +141,7 @@ class Client
         $timestamp = $request->getHeaderLine('X-Signature-Timestamp');
 
         if (empty($signature) || empty($timestamp) || ! DiscordInteraction::verifyKey((string) $request->getBody(), $signature, $timestamp, $this->options['public_key'])) {
-            return new Response(401, [0], 'Not verified');
+            return \React\Promise\Resolve(new Response(401, [0], 'Not verified'));
         }
 
         $interaction = new Interaction(json_decode($request->getBody(), true));
@@ -182,7 +185,7 @@ class Client
     {
         $checkCommand = function ($command) use ($interaction, &$checkCommand) {
             if (isset($this->commands[$command['name']])) {
-                if ($this->commands[$command['name']]->execute($command['options'], $interaction)) return true;
+                if ($this->commands[$command['name']]->execute($command['options'] ?? [], $interaction)) return true;
             }
 
             foreach ($command['options'] ?? [] as $option) {
@@ -219,6 +222,28 @@ class Client
         }
 
         return $this->commands[$baseCommand]->addSubCommand($name, $callback);
+    }
+
+    /**
+     * Runs the client on a CGI/FPM server.
+     */
+    public function runCgi()
+    {
+        if (empty($_SERVER['REMOTE_ADDR'])) {
+            throw new Exception('The `runCgi()` method must only be called from PHP-CGI/FPM.');
+        }
+        
+        if (! class_exists(Environment::class)) {
+            throw new Exception('The `kambo/httpmessage` package must be installed to handle slash command interactions with a CGI/FPM server.');
+        }
+
+        $environment = new Environment($_SERVER, fopen('php://input', 'w+'), $_POST, $_COOKIE, $_FILES);
+        $serverRequest = (new ServerRequestFactory())->create($environment);
+    
+        $this->handleRequest($serverRequest)->then(function (Response $response) {
+            http_response_code($response->getStatusCode());
+            echo (string) $response->getBody();
+        });
     }
 
     /**
