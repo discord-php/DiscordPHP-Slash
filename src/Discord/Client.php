@@ -143,7 +143,6 @@ class Client
 
         $interaction = new Interaction(json_decode($request->getBody(), true));
 
-        dump($interaction->getAttributes());
         $this->logger->info('received interaction', $interaction->jsonSerialize());
 
         return $this->handleInteraction($interaction)->then(function ($result) {
