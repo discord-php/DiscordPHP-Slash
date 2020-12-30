@@ -2,7 +2,14 @@
 
 namespace Discord\Slash\Parts;
 
-class Part
+use JsonSerializable;
+
+/**
+ * Represents a part in the Discord servers.
+ * 
+ * @author David Cole <david.cole1340@gmail.com>
+ */
+class Part implements JsonSerializable
 {
     /**
      * Array of attributes.
@@ -50,5 +57,10 @@ class Part
     public function __set(string $key, $value)
     {
         $this->attributes[$key] = $value;
+    }
+
+    public function jsonSerialize()
+    {
+        return $this->attributes;
     }
 }

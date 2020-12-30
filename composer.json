@@ -10,10 +10,12 @@
         }
     ],
     "require": {
+        "php": ">=7.3|>=8.0",
         "react/http": "^1.2",
         "symfony/options-resolver": "^5.2",
         "monolog/monolog": "^2.2",
-        "guzzlehttp/guzzle": "^7.2"
+        "guzzlehttp/guzzle": "^7.2",
+        "discord/interactions": "^1.0"
     },
     "autoload": {
         "psr-4": {
