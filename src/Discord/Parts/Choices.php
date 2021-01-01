@@ -1,10 +1,19 @@
 <?php
 
+/*
+ * This file is a part of the DiscordPHP-Slash project.
+ *
+ * Copyright (c) 2020-present David Cole <david.cole1340@gmail.com>
+ *
+ * This source file is subject to the GNU General Public License v3.0
+ * that is bundled with this source code in the LICENSE.md file.
+ */
+
 namespace Discord\Slash\Parts;
 
 /**
  * Choices represents an array of choices that can be given to a command.
- * 
+ *
  * @author David Cole <david.cole1340@gmail.com>
  */
 class Choices
@@ -30,7 +39,7 @@ class Choices
      * Handles dynamic get requests to the class.
      *
      * @param string $name
-     * 
+     *
      * @return string|int|null
      */
     public function __get($name)
@@ -45,7 +54,7 @@ class Choices
     }
 
     /**
-     * Returns the info to appear when the class is `var_dump`'d
+     * Returns the info to appear when the class is `var_dump`'d.
      *
      * @return array
      */

@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is a part of the DiscordPHP-Slash project.
+ *
+ * Copyright (c) 2020-present David Cole <david.cole1340@gmail.com>
+ *
+ * This source file is subject to the GNU General Public License v3.0
+ * that is bundled with this source code in the LICENSE.md file.
+ */
+
 namespace Discord\Slash;
 
 use Discord\Slash\Enums\ApplicationCommandOptionType;
@@ -40,7 +49,7 @@ class RegisterClient
             ],
         ]);
 
-        $this->application = new Part($this->request('GET', "oauth2/applications/@me"));
+        $this->application = new Part($this->request('GET', 'oauth2/applications/@me'));
     }
 
     /**
@@ -58,7 +67,7 @@ class RegisterClient
             $endpoint .= "/guilds/{$guild_id}";
         }
 
-        $response = $this->request('GET', $endpoint."/commands");
+        $response = $this->request('GET', $endpoint.'/commands');
         $commands = [];
 
         foreach ($response as $command) {
@@ -102,7 +111,7 @@ class RegisterClient
      *
      * @param string $name
      * @param string $description
-     * @param array $options
+     * @param array  $options
      *
      * @return Command
      */
@@ -127,7 +136,7 @@ class RegisterClient
      * @param string $guild_id
      * @param string $name
      * @param string $description
-     * @param array $options
+     * @param array  $options
      *
      * @return Command
      */
@@ -171,6 +180,7 @@ class RegisterClient
         }
 
         $this->request('PATCH', "{$endpoint}/commands/{$command->id}", $raw);
+
         return $command;
     }
 
@@ -260,7 +270,7 @@ class RegisterClient
      *
      * @param string $method
      * @param string $endpoint
-     * @param array $content
+     * @param array  $content
      *
      * @return array
      */
@@ -273,16 +283,16 @@ class RegisterClient
         }
 
         $response = $this->http->request($method, $endpoint, $options);
+
         return json_decode($response->getBody(), true);
     }
     /**
-     *
      * Returns the User-Agent of the application.
      *
      * @return string
      */
     private function getUserAgent()
     {
-        return "DiscordBot (https://github.com/davidcole1340/DiscordPHP-Slash, v0.0.1)";
+        return 'DiscordBot (https://github.com/davidcole1340/DiscordPHP-Slash, v0.0.1)';
     }
 }

@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is a part of the DiscordPHP-Slash project.
+ *
+ * Copyright (c) 2020-present David Cole <david.cole1340@gmail.com>
+ *
+ * This source file is subject to the GNU General Public License v3.0
+ * that is bundled with this source code in the LICENSE.md file.
+ */
+
 namespace Discord\Slash;
 
 use Discord\Interaction as DiscordInteraction;
@@ -33,7 +42,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class Client
 {
-    const API_BASE_URI = "https://discord.com/api/v8/";
+    const API_BASE_URI = 'https://discord.com/api/v8/';
 
     /**
      * Array of options for the client.
@@ -59,13 +68,13 @@ class Client
     /**
      * An array of registered commands.
      *
-     * @var RegisteredCommand[] 
+     * @var RegisteredCommand[]
      */
     private $commands;
 
     /**
      * Logger for client.
-     * 
+     *
      * @var LoggerInterface
      */
     private $logger;
@@ -150,6 +159,7 @@ class Client
 
         return $this->handleInteraction($interaction)->then(function ($result) {
             $this->logger->info('responding to interaction', $result);
+
             return new Response(200, [], json_encode($result));
         });
     }
@@ -158,12 +168,12 @@ class Client
      * Handles an interaction from Discord.
      *
      * @param Interaction $interaction
-     * 
+     *
      * @return ExtendedPromiseInterface
      */
     private function handleInteraction(Interaction $interaction): ExtendedPromiseInterface
     {
-        return new Promise(function ($resolve, $reject) use ($interaction) { 
+        return new Promise(function ($resolve, $reject) use ($interaction) {
             switch ($interaction->type) {
                 case InteractionType::PING:
                     return $resolve([
@@ -171,6 +181,7 @@ class Client
                     ]);
                 case InteractionType::APPLICATION_COMMAND:
                     $interaction->setResolve($resolve);
+
                     return $this->handleApplicationCommand($interaction);
             }
         });
@@ -185,11 +196,15 @@ class Client
     {
         $checkCommand = function ($command) use ($interaction, &$checkCommand) {
             if (isset($this->commands[$command['name']])) {
-                if ($this->commands[$command['name']]->execute($command['options'] ?? [], $interaction)) return true;
+                if ($this->commands[$command['name']]->execute($command['options'] ?? [], $interaction)) {
+                    return true;
+                }
             }
 
             foreach ($command['options'] ?? [] as $option) {
-                if ($checkCommand($option)) return true;
+                if ($checkCommand($option)) {
+                    return true;
+                }
             }
         };
 
@@ -200,17 +215,21 @@ class Client
      * Registeres a command with the client.
      *
      * @param string|array $name
-     * @param callable $callback
-     * 
+     * @param callable     $callback
+     *
      * @return RegisteredCommand
      */
-    public function registerCommand($name, callable $callback = null): RegisteredCommand 
+    public function registerCommand($name, callable $callback = null): RegisteredCommand
     {
-        if (is_array($name) && count($name) == 1) $name = array_shift($name);
+        if (is_array($name) && count($name) == 1) {
+            $name = array_shift($name);
+        }
 
         // registering base command
         if (! is_array($name) || count($name) == 1) {
-            if (isset($this->commands[$name])) throw new InvalidArgumentException("The command `{$name}` already exists.");
+            if (isset($this->commands[$name])) {
+                throw new InvalidArgumentException("The command `{$name}` already exists.");
+            }
             
             return $this->commands[$name] = new RegisteredCommand($name, $callback);
         }

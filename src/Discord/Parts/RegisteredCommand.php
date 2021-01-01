@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is a part of the DiscordPHP-Slash project.
+ *
+ * Copyright (c) 2020-present David Cole <david.cole1340@gmail.com>
+ *
+ * This source file is subject to the GNU General Public License v3.0
+ * that is bundled with this source code in the LICENSE.md file.
+ */
+
 namespace Discord\Slash\Parts;
 
 use InvalidArgumentException;
@@ -8,7 +17,7 @@ use InvalidArgumentException;
  * RegisteredCommand represents a command that has been registered
  * with the Discord servers and has a handler to handle when the
  * command is triggered.
- * 
+ *
  * @author David Cole <david.cole1340@gmail.com>
  */
 class RegisteredCommand
@@ -39,23 +48,23 @@ class RegisteredCommand
      * with the Discord servers and has a handler to handle when the
      * command is triggered.
      *
-     * @param string $name
+     * @param string   $name
      * @param callable $callback
-     */   
+     */
     public function __construct(string $name, callable $callback = null)
     {
         $this->name = $name;
-        $this->callback = $callback;   
+        $this->callback = $callback;
     }
 
     /**
      * Executes the command. Will search for a sub-command if given,
      * otherwise executes the callback, if given.
      *
-     * @param array $options
+     * @param array       $options
      * @param Interaction $interaction
-     * 
-     * @return bool Whether the command successfully executed. 
+     *
+     * @return bool Whether the command successfully executed.
      */
     public function execute(array $options, Interaction $interaction): bool
     {
@@ -69,6 +78,7 @@ class RegisteredCommand
 
         if (! is_null($this->callback)) {
             ($this->callback)($interaction, new Choices($options));
+
             return true;
         }
 
@@ -89,7 +99,7 @@ class RegisteredCommand
      * Tries to get a sub-command if exists.
      *
      * @param string $name
-     * 
+     *
      * @return RegisteredCommand|null
      */
     public function getSubCommand(string $name): ?RegisteredCommand
@@ -101,16 +111,20 @@ class RegisteredCommand
      * Adds a sub-command to the command.
      *
      * @param string|array $name
-     * @param callable $callback
-     * 
+     * @param callable     $callback
+     *
      * @return RegisteredCommand
      */
-    public function addSubCommand($name, callable $callback = null): RegisteredCommand 
+    public function addSubCommand($name, callable $callback = null): RegisteredCommand
     {
-        if (is_array($name) && count($name) == 1) $name = array_shift($name);
+        if (is_array($name) && count($name) == 1) {
+            $name = array_shift($name);
+        }
 
         if (! is_array($name) || count($name) == 1) {
-            if (isset($this->subCommands[$name])) throw new InvalidArgumentException("The command `{$name}` already exists.");
+            if (isset($this->subCommands[$name])) {
+                throw new InvalidArgumentException("The command `{$name}` already exists.");
+            }
 
             return $this->subCommands[$name] = new static($name, $callback);
         }
@@ -119,7 +133,7 @@ class RegisteredCommand
 
         if (! isset($this->subCommands[$baseCommand])) {
             $this->addSubCommand($baseCommand);
-        } 
+        }
 
         return $this->subCommands[$baseCommand]->addSubCommand($name, $callback);
     }

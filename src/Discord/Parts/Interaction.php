@@ -1,12 +1,21 @@
 <?php
 
+/*
+ * This file is a part of the DiscordPHP-Slash project.
+ *
+ * Copyright (c) 2020-present David Cole <david.cole1340@gmail.com>
+ *
+ * This source file is subject to the GNU General Public License v3.0
+ * that is bundled with this source code in the LICENSE.md file.
+ */
+
 namespace Discord\Slash\Parts;
 
 use Discord\InteractionResponseType;
 
 /**
  * An interaction sent from Discord servers.
- * 
+ *
  * @property string $id
  * @property string $type
  * @property array $data
@@ -51,11 +60,11 @@ class Interaction extends Part
     /**
      * Replies to the interaction with a message.
      *
-     * @param string $content
-     * @param bool $tts
+     * @param string     $content
+     * @param bool       $tts
      * @param array|null $embed
      * @param array|null $allowed_mentions
-     * @param bool $source
+     * @param bool       $source
      */
     public function reply(string $content, bool $tts = false, ?array $embed = null, ?array $allowed_mentions = null, bool $source = false)
     {
@@ -82,8 +91,8 @@ class Interaction extends Part
      * Replies to the interaction with a message and shows the source message.
      * Alias for `reply()` with source = true.
      *
-     * @param string $content
-     * @param boolean $tts
+     * @param string     $content
+     * @param bool       $tts
      * @param array|null $embed
      * @param array|null $allowed_mentions
      */
