@@ -10,7 +10,7 @@ PHP server and client for Discord slash commands.
 ## Installation
 
 ```
-$ composer require discordphp/slash
+$ composer require discord-php/slash
 ```
 
 ## Usage

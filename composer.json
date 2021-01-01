@@ -1,5 +1,5 @@
 {
-    "name": "discordphp/slash",
+    "name": "discord-php/slash",
     "description": "HTTP server for Discord slash commands",
     "type": "library",
     "license": "GPL-3.0-or-later",
