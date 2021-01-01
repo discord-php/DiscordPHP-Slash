@@ -15,6 +15,7 @@ use Discord\Slash\Enums\ApplicationCommandOptionType;
 use Discord\Slash\Parts\Command;
 use Discord\Slash\Parts\Part;
 use GuzzleHttp\Client as GuzzleClient;
+use GuzzleHttp\Exception\RequestException;
 use ReflectionClass;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -33,6 +34,13 @@ class RegisterClient
      * @var object
      */
     private $application;
+
+    /**
+     * HTTP client.
+     *
+     * @var GuzzleClient
+     */
+    private $http;
 
     /**
      * HTTP client constructor.
@@ -282,7 +290,18 @@ class RegisterClient
             $options['json'] = $content;
         }
 
-        $response = $this->http->request($method, $endpoint, $options);
+        try {
+            $response = $this->http->request($method, $endpoint, $options);
+        } catch (RequestException $e) {
+            switch ($e->getResponse()->getStatusCode()) {
+            case 429:
+                $resetAfter = (float) $e->getResponse()->getheaderLine('X-RateLimit-Reset-After');
+                usleep($resetAfter * 1000);
+                return $this->request($method, $endpoint, $content);
+            default:
+                throw $e;
+            }
+        }
 
         return json_decode($response->getBody(), true);
     }
