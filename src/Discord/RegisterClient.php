@@ -296,7 +296,7 @@ class RegisterClient
             switch ($e->getResponse()->getStatusCode()) {
             case 429:
                 $resetAfter = (float) $e->getResponse()->getheaderLine('X-RateLimit-Reset-After');
-                usleep($resetAfter * 1000);
+                usleep($resetAfter * 1000000);
                 return $this->request($method, $endpoint, $content);
             default:
                 throw $e;
