@@ -15,7 +15,8 @@
         "symfony/options-resolver": "^5.2",
         "monolog/monolog": "^2.2",
         "guzzlehttp/guzzle": "^7.2",
-        "discord/interactions": "^1.0"
+        "discord/interactions": "^1.0",
+        "discord-php/http": "^8.0"
     },
     "autoload": {
         "psr-4": {
@@ -23,9 +24,11 @@
         }
     },
     "require-dev": {
-        "symfony/var-dumper": "^5.2"
+        "symfony/var-dumper": "^5.2",
+        "team-reflex/discord-php": "dev-develop"
     },
     "suggest": {
-        "kambo/httpmessage": "Required for hosting the command server behind a CGI/FPM server."
+        "kambo/httpmessage": "Required for hosting the command server behind a CGI/FPM server.",
+        "team-reflex/discord-php": "Provides an easier interface, where interactions are sent via websocket rather than a webhook."
     }
 }

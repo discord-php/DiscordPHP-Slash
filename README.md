@@ -66,12 +66,20 @@ $client->deleteCommand($command);
 
 ### `Discord\Slash\Client`
 
+There are two ways to set up the slash client:
+- Webhook method
+- Gateway method (recommended)
+
+Please read both sections as both have important information and both have advantages/disadvantages.
+
+#### Webhook method
+
 Now that you have registered commands, you can set up an HTTP server to listen for requests from Discord.
 
 There are a few ways to set up an HTTP server to listen for requests:
 - The built-in ReactPHP HTTP server.
-- Using an external HTTP server such as Apache or nginx.
 - Using the built-in ReactPHP HTTP server without HTTPS and using Apache or nginx as a reverse proxy (recommended).
+- Using an external HTTP server such as Apache or nginx.
 
 Whatever path you choose, the server **must** be protected with HTTPS - Discord will not accept regular HTTP.
 
@@ -122,7 +130,7 @@ $client->registerCommand('hello', function (Interaction $interaction, Choices $c
 $client->run();
 ```
 
-This library only handles slash commands, and there is no support for any other interactions with Discord such as creating channels, sending other messages etc. You can easily combine the DiscordPHP library with this library to have a much larger collection of tools. All you must do is ensure both clients share the same ReactPHP event loop. In the future, there will be more integration between the libraries. Here is an example:
+This library only handles slash commands, and there is no support for any other interactions with Discord such as creating channels, sending other messages etc. You can easily combine the DiscordPHP library with this library to have a much larger collection of tools. All you must do is ensure both clients share the same ReactPHP event loop. Here is an example:
 
 ```php
 <?php
@@ -145,11 +153,20 @@ $client = new Client([
     'loop' =>  $discord->getLoop(),
 ]);
 
+$client->linkDiscord($discord, false); // false signifies that we still want to use the HTTP server - default is true, which will use gateway
+
 $discord->on('ready', function (Discord $discord) {
     // DiscordPHP is ready
 });
 
 $client->registerCommand('my_cool_command', function (Interaction $interaction, Choices $choices) use ($discord) {
+    // there are a couple fields in $interaction that will return DiscordPHP parts:
+    $interaction->guild;
+    $interaction->channel;
+    $interaction->member;
+
+    // if you don't link DiscordPHP, it will simply return raw arrays
+
     $discord->guilds->get('id', 'coolguild')->members->ban(); // do something ?
     $interaction->acknowledge();
 });
@@ -212,11 +229,49 @@ $ vim /etc/apache2/sites-available/000-default.conf # default site
         SSLCertificateFile      /path/to/ssl/cert.crt           # change to your cert path
         SSLCertificateKeyFile   /path/to/ssl/cert.key           # change to your key path
 </VirtualHost>
-``` 
+```
 3. Restart apache - the code below works on Debian-based systems:
 ```shell
 $ sudo service apache2 restart
 ```
+
+#### Gateway method (recommended)
+
+The client can connect with a regular [DiscordPHP](https://github.com/discord-php/DiscordPHP) client to listen for interactions over gateway.
+To use this method, make sure there is no interactions endpoint set in your Discord developer application.
+
+Make sure you have included DiscordPHP into your project (at the time of writing, only DiscordPHP `develop` branch is supported):
+
+```sh
+$ composer require team-reflex/discord-php dev-develop
+```
+
+You can then create both clients and link them:
+
+```php
+<?php
+
+include 'vendor/autoload.php';
+
+use Discord\Discord;
+use Discord\Slash\Client;
+
+$discord = new Discord([
+    'token' => 'abcd.efdgh.asdas',
+]);
+
+$client = new Client([
+    'loop' => $discord->getLoop(), // Discord and Client MUST share event loops
+]);
+
+$client->linkDiscord($discord);
+
+$client->registerCommand(...);
+
+$discord->run();
+```
+
+The gateway method is much easier to set up as you do not have to worry about SSL certificates.
 
 ## License
 

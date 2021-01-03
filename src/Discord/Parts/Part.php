@@ -18,8 +18,15 @@ use JsonSerializable;
  *
  * @author David Cole <david.cole1340@gmail.com>
  */
-class Part implements JsonSerializable
+abstract class Part implements JsonSerializable
 {
+    /**
+     * Array of fillable fields.
+     *
+     * @var array
+     */
+    protected $fillable = [];
+
     /**
      * Array of attributes.
      *
@@ -68,8 +75,29 @@ class Part implements JsonSerializable
         $this->attributes[$key] = $value;
     }
 
+    /**
+     * Returns the part in JSON serializable format.
+     *
+     * @return array
+     */
     public function jsonSerialize()
     {
         return $this->attributes;
+    }
+
+    /**
+     * Provides debugging information to PHP.
+     *
+     * @return array
+     */
+    public function __debugInfo()
+    {
+        $result = [];
+
+        foreach ($this->fillable as $field) {
+            $result[$field] = $this->{$field};
+        }
+
+        return $result;
     }
 }
