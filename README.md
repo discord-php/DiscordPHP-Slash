@@ -153,8 +153,6 @@ $client = new Client([
     'loop' =>  $discord->getLoop(),
 ]);
 
-$client->linkDiscord($discord, false); // false signifies that we still want to use the HTTP server - default is true, which will use gateway
-
 $discord->on('ready', function (Discord $discord) {
     // DiscordPHP is ready
 });
@@ -172,6 +170,8 @@ $client->registerCommand('my_cool_command', function (Interaction $interaction, 
 });
 
 $discord->run();
+
+$client->linkDiscord($discord, false); // false signifies that we still want to use the HTTP server - default is true, which will use gateway
 ```
 
 ### Running behing PHP-CGI/PHP-FPM
