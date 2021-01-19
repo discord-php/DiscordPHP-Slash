@@ -18,7 +18,7 @@ use JsonSerializable;
  *
  * @author David Cole <david.cole1340@gmail.com>
  */
-abstract class Part implements JsonSerializable
+class Part implements JsonSerializable
 {
     /**
      * Array of fillable fields.
