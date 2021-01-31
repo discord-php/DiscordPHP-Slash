@@ -25,7 +25,8 @@
     },
     "require-dev": {
         "symfony/var-dumper": "^5.2",
-        "team-reflex/discord-php": "dev-develop"
+        "team-reflex/discord-php": "dev-develop",
+        "friendsofphp/php-cs-fixer": "^2.18"
     },
     "suggest": {
         "kambo/httpmessage": "Required for hosting the command server behind a CGI/FPM server.",

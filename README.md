@@ -275,7 +275,7 @@ The gateway method is much easier to set up as you do not have to worry about SS
 
 ## License
 
-This software is licensed under the GNU General Public License v3.0 which can be viewed in the LICENSE.md file.
+This software is licensed under the MIT license which can be viewed in the LICENSE.md file.
 
 ## Credits
 

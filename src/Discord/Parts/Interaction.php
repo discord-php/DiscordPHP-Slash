@@ -3,10 +3,10 @@
 /*
  * This file is a part of the DiscordPHP-Slash project.
  *
- * Copyright (c) 2020-present David Cole <david.cole1340@gmail.com>
+ * Copyright (c) 2021 David Cole <david.cole1340@gmail.com>
  *
- * This source file is subject to the GNU General Public License v3.0
- * that is bundled with this source code in the LICENSE.md file.
+ * This source file is subject to the MIT license which is
+ * bundled with this source code in the LICENSE.md file.
  */
 
 namespace Discord\Slash\Parts;
@@ -226,10 +226,10 @@ class Interaction extends Part
      * Also requires the slash client to be linked to a DiscordPHP client
      * OR an application ID given in the options array.
      *
-     * @param string $message_id
-     * @param string|null $content
+     * @param string               $message_id
+     * @param string|null          $content
      * @param array[]|Embed[]|null $embeds
-     * @param array|null $allowed_mentions
+     * @param array|null           $allowed_mentions
      *
      * @return ExtendedPromiseInterface
      */
@@ -272,7 +272,7 @@ class Interaction extends Part
         $resolver
         ->setDefined([
             'content', 'username', 'avatar_url',
-            'tts', 'embeds', 'allowed_mentions'
+            'tts', 'embeds', 'allowed_mentions',
         ])
         ->setAllowedTypes('content', 'string')
         ->setAllowedTypes('username', 'string')
