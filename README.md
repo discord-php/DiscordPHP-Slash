@@ -130,6 +130,9 @@ $client->registerCommand('hello', function (Interaction $interaction, Choices $c
 $client->run();
 ```
 
+Please note that you must always acknowledge the interaction within 3 seconds, otherwise Discord will cancel the interaction.
+If you are going to do something that takes time, call the `acknowledge()` function and then add a follow up message using `sendFollowUpMessage()` when ready.
+
 This library only handles slash commands, and there is no support for any other interactions with Discord such as creating channels, sending other messages etc. You can easily combine the DiscordPHP library with this library to have a much larger collection of tools. All you must do is ensure both clients share the same ReactPHP event loop. Here is an example:
 
 ```php
