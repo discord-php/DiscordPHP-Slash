@@ -2,6 +2,10 @@
 
 PHP server and client for Discord slash commands.
 
+## Warning
+
+Discord slash commands are still in beta. Expect the way these commands work to change at any time without notice. Same goes for this library.
+
 ## Requirements
 
 - PHP >=7.3
