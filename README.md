@@ -1,6 +1,6 @@
 # DiscordPHP-Slash
 
-PHP server and client for Discord slash commands.
+PHP server and client for Discord slash commands. Please read the [Discord slash command documentation](https://discord.com/developers/docs/interactions/slash-commands) before using this library.
 
 ## Warning
 
