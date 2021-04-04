@@ -23,7 +23,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  * @property string $id
  * @property string $type
  * @property array $data
- * @property string $guild_id
+ * @property string|null $guild_id
  * @property string $channel_id
  * @property \Discord\Parts\Member\Member|array $member
  * @property string $token
@@ -82,7 +82,7 @@ class Interaction extends Part
         $this->application_id = $application_id;
 
         if (is_null($this->http) && ! is_null($this->discord)) {
-            $this->http = $this->discord->getHttp();
+            $this->http = $this->discord->getHttpClient();
         }
 
         if (is_null($this->application_id) && ! is_null($this->discord)) {
