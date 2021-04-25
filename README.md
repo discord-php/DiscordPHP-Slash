@@ -247,10 +247,10 @@ $ sudo service apache2 restart
 The client can connect with a regular [DiscordPHP](https://github.com/discord-php/DiscordPHP) client to listen for interactions over gateway.
 To use this method, make sure there is no interactions endpoint set in your Discord developer application.
 
-Make sure you have included DiscordPHP into your project (at the time of writing, only DiscordPHP `develop` branch is supported):
+Make sure you have included DiscordPHP into your project (at the time of writing, only DiscordPHP >=6.0.0 is supported):
 
 ```sh
-$ composer require team-reflex/discord-php dev-develop
+$ composer require team-reflex/discord-php
 ```
 
 You can then create both clients and link them:
