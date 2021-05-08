@@ -148,7 +148,7 @@ class Client
             throw new \RuntimeException('The Discord and slash client do not share the same event loop.');
         }
 
-        $this->http = $discord->getHttp();
+        $this->http = $discord->getHttpClient();
 
         if ($interactionsOverGateway) {
             $discord->on(Event::INTERACTION_CREATE, function ($interaction) {
