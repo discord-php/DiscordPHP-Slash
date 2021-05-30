@@ -125,8 +125,11 @@ class Interaction extends Part
      * @param bool                 $tts              Whether the message should be text-to-speech.
      * @param array[]|Embed[]|null $embeds           An array of up to 10 embeds. Can also be an array of DiscordPHP embeds.
      * @param array|null           $allowed_mentions Allowed mentions object. See Discord developer docs.
+     *
+     * Source is unused
+     * @see https://discord.com/developers/docs/change-log#changes-to-slash-command-response-types-and-flags
      */
-    public function reply(string $content, bool $tts = false, ?array $embeds = null, ?array $allowed_mentions = null)
+    public function reply(string $content, bool $tts = false, ?array $embeds = null, ?array $allowed_mentions = null, ?bool $source = false)
     {
         $response = [
             'content' => $content,
