@@ -15,7 +15,7 @@
         "symfony/options-resolver": "^5.2",
         "monolog/monolog": "^2.2",
         "guzzlehttp/guzzle": "^7.2",
-        "discord/interactions": "1.0.6",
+        "discord/interactions": "^1.0.7",
         "discord-php/http": "^8"
     },
     "autoload": {
