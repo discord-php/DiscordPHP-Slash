@@ -103,8 +103,11 @@ class Interaction extends Part
     /**
      * Acknowledges the interaction. At a bare minimum,
      * you should always acknowledge.
+     *
+     * Source is unused
+     * @see https://discord.com/developers/docs/change-log#changes-to-slash-command-response-types-and-flags
      */
-    public function deferredChannelMessageWithSource()
+    public function acknowledge(?bool $source = true)
     {
         ($this->resolve)([
             'type' => InteractionResponseType::DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE,
