@@ -103,14 +103,14 @@ class Interaction extends Part
     /**
      * Acknowledges the interaction. At a bare minimum,
      * you should always acknowledge.
-     *
-     * @param bool $source Whether to show the source message in chat.
      */
-    public function acknowledge(bool $source = false)
+    public function acknowledgeWithSource()
     {
         ($this->resolve)([
-            'type' => $source ? InteractionResponseType::ACKNOWLEDGE_WITH_SOURCE : InteractionResponseType::ACKNOWLEDGE,
+            'type' => InteractionResponseType::ACKNOWLEDGE_WITH_SOURCE,
+            'data' => $response,
         ]);
+        
     }
 
     /**
