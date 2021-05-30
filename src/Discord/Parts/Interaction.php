@@ -111,7 +111,6 @@ class Interaction extends Part
     {
         ($this->resolve)([
             'type' => InteractionResponseType::DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE,
-            'data' => $response,
         ]);
         
     }
