@@ -104,10 +104,10 @@ class Interaction extends Part
      * Acknowledges the interaction. At a bare minimum,
      * you should always acknowledge.
      */
-    public function acknowledgeWithSource()
+    public function deferredChannelMessageWithSource()
     {
         ($this->resolve)([
-            'type' => InteractionResponseType::ACKNOWLEDGE_WITH_SOURCE,
+            'type' => InteractionResponseType::DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE,
             'data' => $response,
         ]);
         
