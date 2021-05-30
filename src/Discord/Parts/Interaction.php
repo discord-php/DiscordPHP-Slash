@@ -104,13 +104,15 @@ class Interaction extends Part
      * Acknowledges the interaction. At a bare minimum,
      * you should always acknowledge.
      *
-     * @param bool $source Whether to show the source message in chat.
+     * Source is unused
+     * @see https://discord.com/developers/docs/change-log#changes-to-slash-command-response-types-and-flags
      */
-    public function acknowledge(bool $source = false)
+    public function acknowledge(?bool $source = true)
     {
         ($this->resolve)([
-            'type' => $source ? InteractionResponseType::ACKNOWLEDGE_WITH_SOURCE : InteractionResponseType::ACKNOWLEDGE,
+            'type' => InteractionResponseType::DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE,
         ]);
+        
     }
 
     /**
@@ -122,9 +124,11 @@ class Interaction extends Part
      * @param bool                 $tts              Whether the message should be text-to-speech.
      * @param array[]|Embed[]|null $embeds           An array of up to 10 embeds. Can also be an array of DiscordPHP embeds.
      * @param array|null           $allowed_mentions Allowed mentions object. See Discord developer docs.
-     * @param bool                 $source           Whether the source message should be shown.
+     *
+     * Source is unused
+     * @see https://discord.com/developers/docs/change-log#changes-to-slash-command-response-types-and-flags
      */
-    public function reply(string $content, bool $tts = false, ?array $embeds = null, ?array $allowed_mentions = null, bool $source = false)
+    public function reply(string $content, bool $tts = false, ?array $embeds = null, ?array $allowed_mentions = null, ?bool $source = false)
     {
         $response = [
             'content' => $content,
@@ -134,7 +138,7 @@ class Interaction extends Part
         ];
 
         ($this->resolve)([
-            'type' => $source ? InteractionResponseType::CHANNEL_MESSAGE_WITH_SOURCE : InteractionResponseType::CHANNEL_MESSAGE,
+            'type' => InteractionResponseType::CHANNEL_MESSAGE_WITH_SOURCE,
             'data' => $response,
         ]);
     }
