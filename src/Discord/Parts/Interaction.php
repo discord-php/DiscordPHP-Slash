@@ -125,11 +125,12 @@ class Interaction extends Part
      * @param bool                 $tts              Whether the message should be text-to-speech.
      * @param array[]|Embed[]|null $embeds           An array of up to 10 embeds. Can also be an array of DiscordPHP embeds.
      * @param array|null           $allowed_mentions Allowed mentions object. See Discord developer docs.
+     * @param int|null             $flags            Set to 64 to make your response ephemeral
      *
      * Source is unused
      * @see https://discord.com/developers/docs/change-log#changes-to-slash-command-response-types-and-flags
      */
-    public function reply(string $content, bool $tts = false, array $embeds = [], ?array $allowed_mentions = null, bool $source = false)
+    public function reply(string $content, bool $tts = false, array $embeds = [], ?array $allowed_mentions = null, ?bool $source = false, ?int $flags = null)
     {
         $embeds = array_map(function ($e) {
             if ($e instanceof Embed) {
@@ -144,6 +145,7 @@ class Interaction extends Part
             'tts' => $tts,
             'embeds' => $embeds,
             'allowed_mentions' => $allowed_mentions,
+            'flags' => $flags,
         ];
 
         ($this->resolve)([
@@ -162,10 +164,11 @@ class Interaction extends Part
      * @param bool       $tts
      * @param array|null $embeds
      * @param array|null $allowed_mentions
+     * @param int|null   $flags
      */
-    public function replyWithSource(string $content, bool $tts = false, ?array $embeds = null, ?array $allowed_mentions = null)
+    public function replyWithSource(string $content, bool $tts = false, ?array $embeds = null, ?array $allowed_mentions = null, ?int $flags = null)
     {
-        $this->reply($content, $tts, $embeds, $allowed_mentions, true);
+        $this->reply($content, $tts, $embeds, $allowed_mentions, true, $flags);
     }
 
     /**
