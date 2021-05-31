@@ -14,6 +14,7 @@ namespace Discord\Slash\Parts;
 use Discord\Discord;
 use Discord\Http\Http;
 use Discord\InteractionResponseType;
+use Discord\Parts\Embed\Embed;
 use React\Promise\ExtendedPromiseInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -112,7 +113,7 @@ class Interaction extends Part
         ($this->resolve)([
             'type' => InteractionResponseType::DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE,
         ]);
-        
+
     }
 
     /**
@@ -128,8 +129,16 @@ class Interaction extends Part
      * Source is unused
      * @see https://discord.com/developers/docs/change-log#changes-to-slash-command-response-types-and-flags
      */
-    public function reply(string $content, bool $tts = false, ?array $embeds = null, ?array $allowed_mentions = null, ?bool $source = false)
+    public function reply(string $content, bool $tts = false, array $embeds = [], ?array $allowed_mentions = null, bool $source = false)
     {
+        $embeds = array_map(function ($e) {
+            if ($e instanceof Embed) {
+                return $e->getRawAttributes();
+            }
+
+            return $e;
+        }, $embeds);
+
         $response = [
             'content' => $content,
             'tts' => $tts,
