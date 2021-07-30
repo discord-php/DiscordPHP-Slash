@@ -2,7 +2,7 @@
     "name": "discord-php/slash",
     "description": "HTTP server for Discord slash commands",
     "type": "library",
-    "license": "GPL-3.0-or-later",
+    "license": "MIT",
     "authors": [
         {
             "name": "David Cole",
@@ -15,7 +15,7 @@
         "symfony/options-resolver": "^5.2",
         "monolog/monolog": "^2.2",
         "guzzlehttp/guzzle": "^7.2",
-        "discord/interactions": "^1",
+        "discord/interactions": "^1|^2",
         "simplito/elliptic-php": "^1",
         "discord-php/http": "^8"
     },
