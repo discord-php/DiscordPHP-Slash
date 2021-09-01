@@ -17,7 +17,7 @@
         "guzzlehttp/guzzle": "^7.2",
         "discord/interactions": "^1|^2",
         "simplito/elliptic-php": "^1",
-        "discord-php/http": "^8"
+        "discord-php/http": "^8|^9"
     },
     "autoload": {
         "psr-4": {
