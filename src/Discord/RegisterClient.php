@@ -49,13 +49,20 @@ class RegisterClient
      */
     public function __construct(string $token)
     {
-        $this->http = new GuzzleClient([
+        $guzzleoptions = [
             'base_uri' => Client::API_BASE_URI,
             'headers' => [
                 'User-Agent' => $this->getUserAgent(),
                 'Authorization' => 'Bot '.$token,
             ],
-        ]);
+        ];
+
+        if (PHP_OS_FAMILY === 'Windows') {
+            $guzzleoptions['curl'] = [64 => 'false'];
+            $guzzleoptions['verify'] = false;
+        }
+
+        $this->http = new GuzzleClient($guzzleoptions);
 
         $this->application = new Part($this->request('GET', 'oauth2/applications/@me'));
     }
