@@ -244,7 +244,8 @@ $ sudo service apache2 restart
 
 #### Gateway method (Deprecated)
 
-> Starting [DiscordPHP](https://github.com/discord-php/DiscordPHP) v7.0.0, application (slash) command with gateway method is now integrated with the regular DiscordPHP library. You no longer need this DiscordPHP-Slash library anymore! 
+> Starting with [DiscordPHP](https://github.com/discord-php/DiscordPHP) v7.0.0, slash commands are now integrated into the main library. **You no longer need this DiscordPHP-Slash library anymore**!
+> Read more here: https://github.com/discord-php/DiscordPHP/blob/master/V7_CONVERSION.md#slash-commands
 
 The client can connect with a regular [DiscordPHP](https://github.com/discord-php/DiscordPHP) client to listen for interactions over gateway.
 To use this method, make sure there is no interactions endpoint set in your Discord developer application.
