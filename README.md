@@ -70,12 +70,6 @@ $client->deleteCommand($command);
 
 ### `Discord\Slash\Client`
 
-There are two ways to set up the slash client:
-- Webhook method
-- Gateway method (deprecated)
-
-Please read both sections as both have important information and both have advantages/disadvantages.
-
 #### Webhook method
 
 Now that you have registered commands, you can set up an HTTP server to listen for requests from Discord.
@@ -241,47 +235,6 @@ $ vim /etc/apache2/sites-available/000-default.conf # default site
 ```shell
 $ sudo service apache2 restart
 ```
-
-#### Gateway method (Deprecated)
-
-> Starting with [DiscordPHP](https://github.com/discord-php/DiscordPHP) v7.0.0, slash commands are now integrated into the main library. **You no longer need this DiscordPHP-Slash library anymore**!
-> Read more here: https://github.com/discord-php/DiscordPHP/blob/master/V7_CONVERSION.md#slash-commands
-
-The client can connect with a regular [DiscordPHP](https://github.com/discord-php/DiscordPHP) client to listen for interactions over gateway.
-To use this method, make sure there is no interactions endpoint set in your Discord developer application.
-
-Make sure you have included DiscordPHP into your project (at the time of writing, only DiscordPHP 6.x is supported):
-
-```sh
-$ composer require team-reflex/discord-php
-```
-
-You can then create both clients and link them:
-
-```php
-<?php
-
-include 'vendor/autoload.php';
-
-use Discord\Discord;
-use Discord\Slash\Client;
-
-$discord = new Discord([
-    'token' => 'abcd.efdgh.asdas',
-]);
-
-$client = new Client([
-    'loop' => $discord->getLoop(), // Discord and Client MUST share event loops
-]);
-
-$client->linkDiscord($discord);
-
-$client->registerCommand(...);
-
-$discord->run();
-```
-
-The gateway method is much easier to set up as you do not have to worry about SSL certificates.
 
 ## License
 
