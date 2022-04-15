@@ -313,6 +313,6 @@ class RegisterClient
      */
     private function getUserAgent()
     {
-        return 'DiscordBot (https://github.com/davidcole1340/DiscordPHP-Slash, v0.0.1)';
+        return 'DiscordBot (https://github.com/davidcole1340/DiscordPHP-Slash, v2.0.0)';
     }
 }

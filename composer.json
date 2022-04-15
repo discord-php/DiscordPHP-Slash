@@ -29,6 +29,6 @@
         "friendsofphp/php-cs-fixer": "^2.18"
     },
     "suggest": {
-        "kambo/httpmessage": "Required for hosting the command server behind a CGI/FPM server.",
+        "kambo/httpmessage": "Required for hosting the command server behind a CGI/FPM server."
     }
 }
