@@ -19,7 +19,6 @@ use Discord\InteractionResponseType;
 use Discord\InteractionType;
 use Discord\Slash\Parts\Interaction;
 use Discord\Slash\Parts\RegisteredCommand;
-use Discord\WebSockets\Event;
 use Exception;
 use InvalidArgumentException;
 use Kambo\Http\Message\Environment\Environment;
@@ -120,11 +119,8 @@ class Client
      * Links the slash command client with a DiscordPHP client.
      * This will do a couple things:
      * - Interactions will be provided as "rich", meaning that the properties will be parts from DiscordPHP.
-     * - If the `$interactionsOverGateway` parameter is true, the client will listen for interactions via
-     *   gateway and the HTTP server will not be started.
      *
      * @param Discord $discord
-     * @param bool    $interactionsOverGateway
      */
     public function linkDiscord(Discord $discord)
     {
@@ -298,18 +294,6 @@ class Client
         };
 
         $checkCommand($interaction->data);
-    }
-
-    /**
-     * Handles the user response from the command when the interaction
-     * originates from the gateway.
-     *
-     * @param array       $response
-     * @param Interaction $interaction
-     */
-    public function handleGatewayInteractionResponse(array $response, Interaction $interaction)
-    {
-        $this->discord->getHttpClient()->post("interactions/{$interaction->id}/{$interaction->token}/callback", $response)->done();
     }
 
     /**

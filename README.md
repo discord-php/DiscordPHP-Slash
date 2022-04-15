@@ -154,7 +154,7 @@ $client = new Client([
     'loop' =>  $discord->getLoop(),
 ]);
 
-$client->linkDiscord($discord, false); // false signifies that we still want to use the HTTP server - default is true, which will use gateway
+$client->linkDiscord($discord); // we still want to use the HTTP server
 
 $discord->on('ready', function (Discord $discord) {
     // DiscordPHP is ready
