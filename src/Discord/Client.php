@@ -148,7 +148,7 @@ class Client
             throw new \RuntimeException('The Discord and slash client do not share the same event loop.');
         }
 
-        $this->http = $discord->getHttp();
+        $this->http = $discord->getHttpClient();
 
         if ($interactionsOverGateway) {
             $discord->on(Event::INTERACTION_CREATE, function ($interaction) {
@@ -274,7 +274,7 @@ class Client
         return $this->handleInteraction($interaction)->then(function ($result) {
             $this->logger->info('responding to interaction', $result);
 
-            return new Response(200, [], json_encode($result));
+            return new Response(200, ['Content-Type' => 'application/json'], json_encode($result));
         });
     }
 
@@ -334,7 +334,7 @@ class Client
      */
     public function handleGatewayInteractionResponse(array $response, Interaction $interaction)
     {
-        $this->discord->getHttp()->post("interactions/{$interaction->id}/{$interaction->token}/callback", $response)->done();
+        $this->discord->getHttpClient()->post("interactions/{$interaction->id}/{$interaction->token}/callback", $response)->done();
     }
 
     /**

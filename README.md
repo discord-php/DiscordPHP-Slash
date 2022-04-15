@@ -72,7 +72,7 @@ $client->deleteCommand($command);
 
 There are two ways to set up the slash client:
 - Webhook method
-- Gateway method (recommended)
+- Gateway method (deprecated)
 
 Please read both sections as both have important information and both have advantages/disadvantages.
 
@@ -242,15 +242,18 @@ $ vim /etc/apache2/sites-available/000-default.conf # default site
 $ sudo service apache2 restart
 ```
 
-#### Gateway method (recommended)
+#### Gateway method (Deprecated)
+
+> Starting with [DiscordPHP](https://github.com/discord-php/DiscordPHP) v7.0.0, slash commands are now integrated into the main library. **You no longer need this DiscordPHP-Slash library anymore**!
+> Read more here: https://github.com/discord-php/DiscordPHP/blob/master/V7_CONVERSION.md#slash-commands
 
 The client can connect with a regular [DiscordPHP](https://github.com/discord-php/DiscordPHP) client to listen for interactions over gateway.
 To use this method, make sure there is no interactions endpoint set in your Discord developer application.
 
-Make sure you have included DiscordPHP into your project (at the time of writing, only DiscordPHP `develop` branch is supported):
+Make sure you have included DiscordPHP into your project (at the time of writing, only DiscordPHP 6.x is supported):
 
 ```sh
-$ composer require team-reflex/discord-php dev-develop
+$ composer require team-reflex/discord-php
 ```
 
 You can then create both clients and link them:
