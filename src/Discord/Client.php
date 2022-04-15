@@ -99,13 +99,6 @@ class Client
     private $discord;
 
     /**
-     * Will we listen for gateway events or start HTTP server?
-     *
-     * @var bool
-     */
-    private $interactionsOverGateway = false;
-
-    /**
      * HTTP client.
      *
      * @var Http
@@ -119,12 +112,6 @@ class Client
         $this->logger = $this->options['logger'];
 
         $this->loop->futureTick(function () {
-            if ($this->interactionsOverGateway) {
-                $this->logger->info('not starting http server - will wait for gateway events');
-
-                return;
-            }
-
             $this->registerServer();
         });
     }
@@ -139,10 +126,9 @@ class Client
      * @param Discord $discord
      * @param bool    $interactionsOverGateway
      */
-    public function linkDiscord(Discord $discord, bool $interactionsOverGateway = true)
+    public function linkDiscord(Discord $discord)
     {
         $this->discord = $discord;
-        $this->interactionsOverGateway = $interactionsOverGateway;
 
         if ($this->discord->getLoop() !== $this->loop) {
             throw new \RuntimeException('The Discord and slash client do not share the same event loop.');
@@ -150,17 +136,6 @@ class Client
 
         $this->http = $discord->getHttpClient();
 
-        if ($interactionsOverGateway) {
-            $discord->on(Event::INTERACTION_CREATE, function ($interaction) {
-                // possibly the laziest thing ive ever done - stdClass -> array
-                $interaction = json_decode(json_encode($interaction), true);
-                $interaction = new Interaction($interaction, $this->discord, $this->http, $this->options['application_id'] ?? null);
-
-                $this->handleInteraction($interaction)->done(function ($response) use ($interaction) {
-                    $this->handleGatewayInteractionResponse($response, $interaction);
-                });
-            });
-        }
     }
 
     /**
@@ -196,7 +171,7 @@ class Client
         $options = $resolver->resolve($options);
 
         if (! isset($options['logger'])) {
-            $options['logger'] = (new Logger('DiscordPHP/Slash'))->pushHandler(new StreamHandler('php://stdout'));
+            $options['logger'] = new Logger('DiscordPHP/Slash', [new StreamHandler('php://stdout')]);
         }
 
         return $options;
@@ -208,7 +183,7 @@ class Client
     private function registerServer()
     {
         // no uri => cgi/fpm
-        if (is_null($this->options['uri'])) {
+        if ($this->options['uri'] === null) {
             $this->logger->info('running in CGI/FPM mode - follow up messages will not work');
 
             return;
