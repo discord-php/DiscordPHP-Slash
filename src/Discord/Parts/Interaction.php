@@ -79,7 +79,7 @@ class Interaction extends Part
     /**
      * {@inheritdoc}
      *
-     * @param array           $attributes
+     * @param array                   $attributes
      * @param \Discord\Http\Http|null $http
      */
     public function __construct($attributes = [], $http = null)
@@ -125,7 +125,7 @@ class Interaction extends Part
      * @param bool         $tts              Whether the message should be text-to-speech.
      * @param array|null   $embeds           An array of up to 10 embeds.
      * @param array|null   $allowed_mentions Allowed mentions object. See Discord developer docs.
-     * @param int|null     $flags            Set to 64 to make your response ephemeral.
+     * @param int|null     $flags            Set to `InteractionResponseFlags::EPHEMERAL` to make your response ephemeral.
      * @param array|null   $components       Message components.
      * @param array|null   $attachments      Attachment objects with filename and description.
      */
@@ -244,7 +244,7 @@ class Interaction extends Part
      *
      * @see https://discord.com/developers/docs/interactions/receiving-and-responding#edit-followup-message
      *
-     * @param string|int        $message_id
+     * @param string|int        $message_id       Snowflake of message.
      * @param string|array|null $content          String content for the message or the array of message data (with other arguments ignored).
      * @param array|null        $embeds           An array of up to 10 embeds.
      * @param array|null        $allowed_mentions Allowed mentions object. See Discord developer docs.
@@ -253,7 +253,7 @@ class Interaction extends Part
      *
      * @return \React\Promise\ExtendedPromiseInterface
      */
-    public function updateFollowUpMessage(string $message_id, $content = null, array $embeds = null, array $allowed_mentions = null, ?array $components = null, ?array $attachments = null): \React\Promise\ExtendedPromiseInterface
+    public function updateFollowUpMessage($message_id, $content = null, array $embeds = null, array $allowed_mentions = null, ?array $components = null, ?array $attachments = null): \React\Promise\ExtendedPromiseInterface
     {
         if (is_string($content)) {
             $message = [
@@ -279,20 +279,21 @@ class Interaction extends Part
      *
      * @param string|int $message_id
      *
-     * @throws \RuntimeException
-     *
      * @return \React\Promise\ExtendedPromiseInterface
      */
     public function deleteFollowUpMessage($message_id)
     {
         return $this->http->delete(\Discord\Http\Endpoint::bind(\Discord\Http\Endpoint::INTERACTION_FOLLOW_UP, $this->application_id, $this->token, $message_id));
     }
+
     /**
      * Validates a follow up message content.
      *
      * @see https://discord.com/developers/docs/resources/webhook#execute-webhook-jsonform-params
      *
      * @param array $options
+     *
+     * @throws \RuntimeException
      *
      * @return array
      */
