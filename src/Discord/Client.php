@@ -213,7 +213,6 @@ class Client
         return $this->handleInteraction($interaction)->then(function ($result) {
             $this->logger->info('responding to interaction', $result);
 
-            header('Content-Type: application/json');
             return new Response(Response::STATUS_OK, ['Content-Type' => 'application/json'], json_encode($result));
         });
     }
@@ -251,22 +250,16 @@ class Client
         $checkCommand = function ($command) use ($interaction, &$checkCommand) {
             if (isset($this->commands[$command['name']])) {
                 if ($this->commands[$command['name']]->execute($command['options'] ?? [], $interaction)) {
-                    $this->logger->info('executing command', $command);
                     return true;
                 }
             }
 
             foreach ($command['options'] ?? [] as $option) {
                 if ($checkCommand($option)) {
-                    $this->logger->info('executing option', $command);
                     return true;
                 }
             }
-
-            $this->logger->info('done finding command', $command);
         };
-
-        $this->logger->info('finding command', $interaction->data);
 
         $checkCommand($interaction->data);
     }
@@ -320,6 +313,7 @@ class Client
         $serverRequest = (new \Kambo\Http\Message\Factories\Environment\ServerRequestFactory())->create($environment);
 
         $this->handleRequest($serverRequest)->then(function (Response $response) {
+            header('Content-Type: application/json'); // Workaround
             http_response_code($response->getStatusCode());
             echo (string) $response->getBody();
         });
