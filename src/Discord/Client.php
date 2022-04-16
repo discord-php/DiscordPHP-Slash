@@ -202,8 +202,8 @@ class Client
         }
 
         $responseBody = json_decode($request->getBody(), true);
-        if (! isset($responseBody->application_id)) {
-            $responseBody->application_id = $this->options['application_id'];
+        if (! isset($responseBody['application_id'])) {
+            $responseBody['application_id'] = $this->options['application_id'];
         }
 
         $interaction = new Interaction($responseBody, $this->http);
