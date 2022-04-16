@@ -303,7 +303,7 @@ class Client
             throw new \Exception('The `runCgi()` method must only be called from PHP-CGI/FPM.');
         }
 
-        if (! class_exists(Environment::class)) {
+        if (! class_exists(\Kambo\Http\Message\Environment\Environment::class)) {
             throw new \Exception('The `kambo/httpmessage` package must be installed to handle slash command interactions with a CGI/FPM server.');
         }
 
