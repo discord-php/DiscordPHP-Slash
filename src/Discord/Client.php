@@ -313,7 +313,11 @@ class Client
         $serverRequest = (new \Kambo\Http\Message\Factories\Environment\ServerRequestFactory())->create($environment);
 
         $this->handleRequest($serverRequest)->then(function (Response $response) {
-            header('Content-Type: application/json'); // Workaround
+            foreach ($response->getHeaders() as $name => $values) {
+                foreach ($values as $value) {
+                    header(sprintf('%s: %s', $name, $value), false);
+                }
+            }
             http_response_code($response->getStatusCode());
             echo (string) $response->getBody();
         });
