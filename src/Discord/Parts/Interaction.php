@@ -72,7 +72,7 @@ class Interaction extends Part
     /**
      * HTTP instance.
      *
-     * @var \Discord\Http\Http
+     * @var \Discord\Http\Http|null
      */
     private $http;
 

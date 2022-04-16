@@ -11,18 +11,11 @@
 
 namespace Discord\Slash;
 
-use Discord\Discord;
-use Discord\Http\Drivers\React;
-use Discord\Http\Http;
 use Discord\Interaction as DiscordInteraction;
 use Discord\InteractionResponseType;
 use Discord\InteractionType;
 use Discord\Slash\Parts\Interaction;
 use Discord\Slash\Parts\RegisteredCommand;
-use Exception;
-use InvalidArgumentException;
-use Kambo\Http\Message\Environment\Environment;
-use Kambo\Http\Message\Factories\Environment\ServerRequestFactory;
 use React\Http\Message\Response;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
@@ -35,7 +28,6 @@ use React\Promise\ExtendedPromiseInterface;
 use React\Promise\Promise;
 use React\Socket\Server as SocketServer;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Throwable;
 
 /**
  * The Client class acts as an HTTP web server to handle requests from Discord when a command
@@ -91,13 +83,6 @@ class Client
     private $logger;
 
     /**
-     * Optional Discord client.
-     *
-     * @var \Discord\Discord
-     */
-    private $discord;
-
-    /**
      * HTTP client.
      *
      * @var Http
@@ -113,25 +98,6 @@ class Client
         $this->loop->futureTick(function () {
             $this->registerServer();
         });
-    }
-
-    /**
-     * Links the slash command client with a DiscordPHP client.
-     * This will do a couple things:
-     * - Interactions will be provided as "rich", meaning that the properties will be parts from DiscordPHP.
-     *
-     * @param Discord $discord
-     */
-    public function linkDiscord(Discord $discord)
-    {
-        $this->discord = $discord;
-
-        if ($this->discord->getLoop() !== $this->loop) {
-            throw new \RuntimeException('The Discord and slash client do not share the same event loop.');
-        }
-
-        $this->http = $discord->getHttpClient();
-
     }
 
     /**
@@ -192,19 +158,12 @@ class Client
                 $this->logger->info("{$identifier} {$response->getStatusCode()} {$response->getReasonPhrase()}");
 
                 return $response;
-            }, function (Throwable $e) use ($identifier) {
+            }, function (\Throwable $e) use ($identifier) {
                 $this->logger->warning("{$identifier} {$e->getMessage()}");
             });
         });
         $this->socket = new SocketServer($this->options['uri'], $this->getLoop(), $this->options['socket_options']);
         $this->server->listen($this->socket);
-
-        // already provided HTTP client through DiscordPHP
-        if (! is_null($this->http)) {
-            $this->logger->info('using DiscordPHP http client');
-
-            return;
-        }
 
         if (! isset($this->options['token'])) {
             $this->logger->warning('no token provided - http client will not work');
@@ -214,7 +173,7 @@ class Client
             $this->logger->warning('no application id provided - some methods may not work');
         }
 
-        $this->http = new Http('Bot '.$this->options['token'], $this->loop, $this->logger, new React($this->loop, $this->options['socket_options']));
+        $this->http = new \Discord\Http\Http('Bot '.$this->options['token'], $this->loop, $this->logger, new \Discord\Http\Drivers\React($this->loop, $this->options['socket_options']));
     }
 
     /**
@@ -238,7 +197,12 @@ class Client
             return \React\Promise\Resolve(new Response(401, [0], 'Not verified'));
         }
 
-        $interaction = new Interaction(json_decode($request->getBody(), true), $this->discord, $this->http, $this->options['application_id'] ?? null);
+        $responseBody = json_decode($request->getBody());
+        if (! isset($responseBody->application_id)) {
+            $responseBody->application_id = $this->options['application_id'];
+        }
+
+        $interaction = new Interaction($responseBody, $this->http);
 
         $this->logger->info('received interaction', $interaction->jsonSerialize());
 
@@ -313,7 +277,7 @@ class Client
         // registering base command
         if (! is_array($name) || count($name) == 1) {
             if (isset($this->commands[$name])) {
-                throw new InvalidArgumentException("The command `{$name}` already exists.");
+                throw new \InvalidArgumentException("The command `{$name}` already exists.");
             }
 
             return $this->commands[$name] = new RegisteredCommand($name, $callback);
@@ -334,15 +298,15 @@ class Client
     public function runCgi()
     {
         if (empty($_SERVER['REMOTE_ADDR'])) {
-            throw new Exception('The `runCgi()` method must only be called from PHP-CGI/FPM.');
+            throw new \Exception('The `runCgi()` method must only be called from PHP-CGI/FPM.');
         }
 
         if (! class_exists(Environment::class)) {
-            throw new Exception('The `kambo/httpmessage` package must be installed to handle slash command interactions with a CGI/FPM server.');
+            throw new \Exception('The `kambo/httpmessage` package must be installed to handle slash command interactions with a CGI/FPM server.');
         }
 
-        $environment = new Environment($_SERVER, fopen('php://input', 'w+'), $_POST, $_COOKIE, $_FILES);
-        $serverRequest = (new ServerRequestFactory())->create($environment);
+        $environment = new \Kambo\Http\Message\Environment\Environment($_SERVER, fopen('php://input', 'w+'), $_POST, $_COOKIE, $_FILES);
+        $serverRequest = (new \Kambo\Http\Message\Factories\Environment\ServerRequestFactory())->create($environment);
 
         $this->handleRequest($serverRequest)->then(function (Response $response) {
             http_response_code($response->getStatusCode());
