@@ -314,8 +314,10 @@ class Client
 
         $this->handleRequest($serverRequest)->then(function (Response $response) {
             foreach ($response->getHeaders() as $name => $values) {
-                foreach ($values as $value) {
-                    header(sprintf('%s: %s', $name, $value), false);
+                if ($name) {
+                    foreach ($values as $value) {
+                        header(sprintf('%s: %s', $name, $value), false);
+                    }
                 }
             }
             http_response_code($response->getStatusCode());
