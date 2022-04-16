@@ -154,6 +154,14 @@ class Interaction extends Part
     }
 
     /**
+     * @deprecated 2.0.0 Interaction::reply()
+     */
+    public function replyWithSource(string $content, bool $tts = false, ?array $embeds = null, ?array $allowed_mentions = null, ?int $flags = null)
+    {
+        $this->reply($content, $tts, $embeds, $allowed_mentions, $flags);
+    }
+
+    /**
      * Updates the original response to the interaction.
      * Must have already used `Interaction::reply()`.
      *
@@ -189,9 +197,9 @@ class Interaction extends Part
     /**
      * @deprecated 2.0.0 Interaction::updateOriginalResponse()
      */
-    public function updateInitialResponse(...$args)
+    public function updateInitialResponse(?string $content = null, ?array $embeds = null, ?array $allowed_mentions = null)
     {
-        return $this->updateOriginalResponse(...$args);
+        return $this->updateOriginalResponse($content, $embeds, $allowed_mentions);
     }
 
     /**
