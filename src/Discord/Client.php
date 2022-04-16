@@ -213,7 +213,8 @@ class Client
         return $this->handleInteraction($interaction)->then(function ($result) {
             $this->logger->info('responding to interaction', $result);
 
-            return new Response(200, ['Content-Type' => 'application/json'], json_encode($result));
+            $response = new Response(200, ['Content-Type' => 'application/json'], json_encode($result));
+            $this->logger->info('REPLY:', (array) $response);
         });
     }
 
