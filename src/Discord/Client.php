@@ -224,6 +224,8 @@ class Client
      */
     private function handleInteraction(Interaction $interaction): \React\Promise\ExtendedPromiseInterface
     {
+        $this->logger->info('handling interaction', $interaction->jsonSerialize());
+
         return new \React\Promise\Promise(function ($resolve, $reject) use ($interaction) {
             switch ($interaction->type) {
                 case InteractionType::PING:
@@ -232,6 +234,8 @@ class Client
                     ]);
                 case InteractionType::APPLICATION_COMMAND:
                     $interaction->setResolve($resolve);
+
+                    $this->logger->info('resolving command...');
 
                     return $this->handleApplicationCommand($interaction);
             }
