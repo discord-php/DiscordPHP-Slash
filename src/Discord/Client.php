@@ -21,12 +21,6 @@ use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
-use React\EventLoop\Factory;
-use React\EventLoop\LoopInterface;
-use React\Http\Server as HttpServer;
-use React\Promise\ExtendedPromiseInterface;
-use React\Promise\Promise;
-use React\Socket\Server as SocketServer;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -48,32 +42,11 @@ class Client
     private $options;
 
     /**
-     * HTTP server.
-     *
-     * @var HttpServer
-     */
-    private $server;
-
-    /**
-     * Socket listening for connections.
-     *
-     * @var SocketServer
-     */
-    private $socket;
-
-    /**
      * An array of registered commands.
      *
      * @var RegisteredCommand[]
      */
     private $commands;
-
-    /**
-     * ReactPHP event loop.
-     *
-     * @var LoopInterface
-     */
-    private $loop;
 
     /**
      * Logger for client.
@@ -83,21 +56,44 @@ class Client
     private $logger;
 
     /**
+     * ReactPHP event loop.
+     *
+     * @var \React\EventLoop\LoopInterface|null
+     */
+    private $loop;
+
+    /**
+     * HTTP server.
+     *
+     * @var \React\Http\Server|null
+     */
+    private $server;
+
+    /**
+     * Socket listening for connections.
+     *
+     * @var \React\Socket\Server|null
+     */
+    private $socket;
+
+    /**
      * HTTP client.
      *
-     * @var Http
+     * @var \Discord\Http|null
      */
     private $http;
 
     public function __construct(array $options = [])
     {
         $this->options = $this->resolveOptions($options);
-        $this->loop = $this->options['loop'];
         $this->logger = $this->options['logger'];
 
-        $this->loop->futureTick(function () {
-            $this->registerServer();
-        });
+        if (isset($this->options['loop'])) {
+            $this->loop = $this->options['loop'];
+            $this->loop->futureTick(function () {
+                $this->registerServer();
+            });
+        }
     }
 
     /**
@@ -123,7 +119,6 @@ class Client
             ])
             ->setDefaults([
                 'uri' => '0.0.0.0:80',
-                'loop' => Factory::create(),
                 'socket_options' => [],
                 'public_key' => null,
                 'application_id' => null,
@@ -151,7 +146,7 @@ class Client
             return;
         }
 
-        $this->server = new HttpServer($this->getLoop(), function (ServerRequestInterface $request) {
+        $this->server = new \React\Http\Server($this->getLoop(), function (ServerRequestInterface $request) {
             $identifier = sprintf('%s %s %s', $request->getMethod(), $request->getRequestTarget(), $request->getHeaderLine('User-Agent'));
 
             return $this->handleRequest($request)->then(function (Response $response) use ($identifier) {
@@ -162,7 +157,7 @@ class Client
                 $this->logger->warning("{$identifier} {$e->getMessage()}");
             });
         });
-        $this->socket = new SocketServer($this->options['uri'], $this->getLoop(), $this->options['socket_options']);
+        $this->socket = new \React\Socket\Server($this->options['uri'], $this->getLoop(), $this->options['socket_options']);
         $this->server->listen($this->socket);
 
         if (! isset($this->options['token'])) {
@@ -218,11 +213,11 @@ class Client
      *
      * @param Interaction $interaction
      *
-     * @return ExtendedPromiseInterface
+     * @return \React\Promise\ExtendedPromiseInterface
      */
-    private function handleInteraction(Interaction $interaction): ExtendedPromiseInterface
+    private function handleInteraction(Interaction $interaction): \React\Promise\ExtendedPromiseInterface
     {
-        return new Promise(function ($resolve, $reject) use ($interaction) {
+        return new \React\Promise\Promise(function ($resolve, $reject) use ($interaction) {
             switch ($interaction->type) {
                 case InteractionType::PING:
                     return $resolve([
@@ -325,9 +320,9 @@ class Client
     /**
      * Gets the ReactPHP event loop.
      *
-     * @return LoopInterface
+     * @return \React\EventLoop\LoopInterface|null
      */
-    public function getLoop(): LoopInterface
+    public function getLoop(): ?\React\EventLoop\LoopInterface
     {
         return $this->loop;
     }

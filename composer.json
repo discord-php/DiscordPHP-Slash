@@ -17,7 +17,6 @@
         "guzzlehttp/guzzle": "^7.2",
         "discord/interactions": "^1|^2",
         "simplito/elliptic-php": "^1",
-        "discord-php/http": "^8|^9|^10"
     },
     "autoload": {
         "psr-4": {
@@ -27,9 +26,11 @@
     "require-dev": {
         "symfony/var-dumper": "^5.2",
         "friendsofphp/php-cs-fixer": "^2.18",
+        "discord-php/http": "^8|^9|^10",
         "kambo/httpmessage": "*"
     },
     "suggest": {
+        "discord-php/http": "Required for follow ups",
         "kambo/httpmessage": "Required for hosting the command server behind a CGI/FPM server."
     }
 }
