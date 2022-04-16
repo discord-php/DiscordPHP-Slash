@@ -23,6 +23,8 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
 use React\EventLoop\Factory;
 use React\EventLoop\LoopInterface;
+use React\Promise\ExtendedPromiseInterface;
+use React\Promise\Promise;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -188,7 +190,7 @@ class Client
         if (! isset($this->options['public_key'])) {
             $this->logger->warning('A public key was not given to the slash client. Unable to validate request.');
 
-            return \React\Promise\Resolve(new Response(401, [0], 'Not verified'));
+            return \React\Promise\resolve(new Response(401, [0], 'Not verified'));
         }
 
         // validate request with public key
@@ -196,7 +198,7 @@ class Client
         $timestamp = $request->getHeaderLine('X-Signature-Timestamp');
 
         if (empty($signature) || empty($timestamp) || ! DiscordInteraction::verifyKey((string) $request->getBody(), $signature, $timestamp, $this->options['public_key'])) {
-            return \React\Promise\Resolve(new Response(401, [0], 'Not verified'));
+            return \React\Promise\resolve(new Response(401, [0], 'Not verified'));
         }
 
         $responseBody = json_decode($request->getBody());
@@ -220,13 +222,11 @@ class Client
      *
      * @param Interaction $interaction
      *
-     * @return \React\Promise\ExtendedPromiseInterface
+     * @return ExtendedPromiseInterface
      */
-    private function handleInteraction(Interaction $interaction): \React\Promise\ExtendedPromiseInterface
+    private function handleInteraction(Interaction $interaction): ExtendedPromiseInterface
     {
-        $this->logger->info('handling interaction', $interaction->jsonSerialize());
-
-        return new \React\Promise\Promise(function ($resolve, $reject) use ($interaction) {
+        return new Promise(function ($resolve, $reject) use ($interaction) {
             switch ($interaction->type) {
                 case InteractionType::PING:
                     return $resolve([
@@ -234,8 +234,6 @@ class Client
                     ]);
                 case InteractionType::APPLICATION_COMMAND:
                     $interaction->setResolve($resolve);
-
-                    $this->logger->info('resolving command...');
 
                     return $this->handleApplicationCommand($interaction);
             }
@@ -336,5 +334,15 @@ class Client
     public function getLoop(): LoopInterface
     {
         return $this->loop;
+    }
+
+    /**
+     * Gets the logger being used.
+     *
+     * @return LoggerInterface
+     */
+    public function getLogger(): LoggerInterface
+    {
+        return $this->logger;
     }
 }

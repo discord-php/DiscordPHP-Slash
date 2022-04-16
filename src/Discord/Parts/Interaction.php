@@ -13,6 +13,7 @@ namespace Discord\Slash\Parts;
 
 use Discord\InteractionResponseFlags;
 use Discord\InteractionResponseType;
+use React\Promise\ExtendedPromiseInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -175,9 +176,9 @@ class Interaction extends Part
      * @param array|null   $components       Message components.
      * @param array|null   $attachments      Attachment objects to keep with filename and description.
      *
-     * @return \React\Promise\ExtendedPromiseInterface
+     * @return ExtendedPromiseInterface
      */
-    public function updateOriginalResponse($content = null, ?array $embeds = null, ?array $allowed_mentions = null, ?array $components = null, ?array $attachments = null): \React\Promise\ExtendedPromiseInterface
+    public function updateOriginalResponse($content = null, ?array $embeds = null, ?array $allowed_mentions = null, ?array $components = null, ?array $attachments = null): ExtendedPromiseInterface
     {
         if (is_string($content)) {
             $response = [
@@ -210,9 +211,9 @@ class Interaction extends Part
      *
      * @see https://discord.com/developers/docs/interactions/receiving-and-responding#delete-original-interaction-response
      *
-     * @return \React\Promise\ExtendedPromiseInterface
+     * @return ExtendedPromiseInterface
      */
-    public function deleteOriginalResponse(): \React\Promise\ExtendedPromiseInterface
+    public function deleteOriginalResponse(): ExtendedPromiseInterface
     {
         return $this->http->delete(\Discord\Http\Endpoint::bind(\Discord\Http\Endpoint::ORIGINAL_INTERACTION_RESPONSE, $this->application_id, $this->token));
     }
@@ -238,9 +239,9 @@ class Interaction extends Part
      *
      * @param array $options
      *
-     * @return \React\Promise\ExtendedPromiseInterface
+     * @return ExtendedPromiseInterface
      */
-    public function sendFollowUpMessage(array $options): \React\Promise\ExtendedPromiseInterface
+    public function sendFollowUpMessage(array $options): ExtendedPromiseInterface
     {
         return $this->http->post(\Discord\Http\Endpoint::bind(\Discord\Http\Endpoint::CREATE_INTERACTION_FOLLOW_UP, $this->application_id, $this->token), $this->validateFollowUpMessage($options));
     }
@@ -259,9 +260,9 @@ class Interaction extends Part
      * @param array|null        $components       Message components.
      * @param array|null        $attachments      Attachment objects to keep with filename and description.
      *
-     * @return \React\Promise\ExtendedPromiseInterface
+     * @return ExtendedPromiseInterface
      */
-    public function updateFollowUpMessage($message_id, $content = null, array $embeds = null, array $allowed_mentions = null, ?array $components = null, ?array $attachments = null): \React\Promise\ExtendedPromiseInterface
+    public function updateFollowUpMessage($message_id, $content = null, array $embeds = null, array $allowed_mentions = null, ?array $components = null, ?array $attachments = null): ExtendedPromiseInterface
     {
         if (is_string($content)) {
             $message = [
@@ -287,7 +288,7 @@ class Interaction extends Part
      *
      * @param string|int $message_id
      *
-     * @return \React\Promise\ExtendedPromiseInterface
+     * @return ExtendedPromiseInterface
      */
     public function deleteFollowUpMessage($message_id)
     {
