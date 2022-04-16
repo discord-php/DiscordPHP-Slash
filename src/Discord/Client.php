@@ -250,18 +250,22 @@ class Client
         $checkCommand = function ($command) use ($interaction, &$checkCommand) {
             if (isset($this->commands[$command['name']])) {
                 if ($this->commands[$command['name']]->execute($command['options'] ?? [], $interaction)) {
+                    $this->logger->info('executing command', $command);
                     return true;
                 }
             }
 
             foreach ($command['options'] ?? [] as $option) {
                 if ($checkCommand($option)) {
+                    $this->logger->info('executing option', $command);
                     return true;
                 }
             }
+
+            $this->logger->info('done finding command', $command);
         };
 
-        $this->logger->info('executing command', (array) $interaction->data);
+        $this->logger->info('finding command', (array) $interaction->data);
 
         $checkCommand($interaction->data);
     }

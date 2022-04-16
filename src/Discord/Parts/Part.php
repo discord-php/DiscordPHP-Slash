@@ -141,7 +141,7 @@ class Part implements ArrayAccess, JsonSerializable
      */
     public function jsonSerialize(): array
     {
-        return (array) $this->attributes;
+        return $this->attributes;
     }
 
     /**
