@@ -21,6 +21,8 @@ use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
+use React\EventLoop\Factory;
+use React\EventLoop\LoopInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -58,7 +60,7 @@ class Client
     /**
      * ReactPHP event loop.
      *
-     * @var \React\EventLoop\LoopInterface|null
+     * @var LoopInterface
      */
     private $loop;
 
@@ -86,14 +88,12 @@ class Client
     public function __construct(array $options = [])
     {
         $this->options = $this->resolveOptions($options);
+        $this->loop = $this->options['loop'];
         $this->logger = $this->options['logger'];
 
-        if (isset($this->options['loop'])) {
-            $this->loop = $this->options['loop'];
-            $this->loop->futureTick(function () {
-                $this->registerServer();
-            });
-        }
+        $this->loop->futureTick(function () {
+            $this->registerServer();
+        });
     }
 
     /**
@@ -116,9 +116,11 @@ class Client
                 'socket_options',
                 'application_id',
                 'token',
+                'http',
             ])
             ->setDefaults([
                 'uri' => '0.0.0.0:80',
+                'loop' => Factory::create(),
                 'socket_options' => [],
                 'public_key' => null,
                 'application_id' => null,
@@ -159,6 +161,13 @@ class Client
         });
         $this->socket = new \React\Socket\Server($this->options['uri'], $this->getLoop(), $this->options['socket_options']);
         $this->server->listen($this->socket);
+
+        // already provided HTTP client through DiscordPHP
+        if (! is_null($this->http)) {
+            $this->logger->info('using DiscordPHP http client');
+
+            return;
+        }
 
         if (! isset($this->options['token'])) {
             $this->logger->warning('no token provided - http client will not work');
@@ -320,9 +329,9 @@ class Client
     /**
      * Gets the ReactPHP event loop.
      *
-     * @return \React\EventLoop\LoopInterface|null
+     * @return LoopInterface
      */
-    public function getLoop(): ?\React\EventLoop\LoopInterface
+    public function getLoop(): LoopInterface
     {
         return $this->loop;
     }
