@@ -261,6 +261,8 @@ class Client
             }
         };
 
+        $this->logger->info('executing command', (array) $interaction->data);
+
         $checkCommand($interaction->data);
     }
 
