@@ -201,7 +201,7 @@ class Client
             return \React\Promise\resolve(new Response(401, [0], 'Not verified'));
         }
 
-        $responseBody = json_decode($request->getBody());
+        $responseBody = json_decode($request->getBody(), true);
         if (! isset($responseBody->application_id)) {
             $responseBody->application_id = $this->options['application_id'];
         }
@@ -265,7 +265,7 @@ class Client
             $this->logger->info('done finding command', $command);
         };
 
-        $this->logger->info('finding command', (array) $interaction->data);
+        $this->logger->info('finding command', $interaction->data);
 
         $checkCommand($interaction->data);
     }

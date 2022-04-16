@@ -24,14 +24,14 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  * @property string      $id             ID of the interaction.
  * @property string      $application_id ID of the application the interaction is for.
  * @property int         $type           Type of interaction.
- * @property object|null $data           Data associated with the interaction.
+ * @property array|null  $data           Data associated with the interaction.
  * @property string|null $guild_id       ID of the guild the interaction was sent from.
  * @property string|null $channel_id     ID of the channel the interaction was sent from.
- * @property object|null $member         Member who invoked the interaction.
- * @property object|null $user           User who invoked the interaction.
+ * @property array|null  $member         Member who invoked the interaction.
+ * @property array|null  $user           User who invoked the interaction.
  * @property string      $token          Continuation token for responding to the interaction.
  * @property int         $version        Version of interaction.
- * @property object|null $message        Message that triggered the interactions, when triggered from message components.
+ * @property array|null  $message        Message that triggered the interactions, when triggered from message components.
  * @property string|null $locale         The selected language of the invoking user.
  * @property string|null $guild_locale   The guild's preferred locale, if invoked in a guild.
  */
