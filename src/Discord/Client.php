@@ -34,8 +34,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class Client
 {
-    const API_BASE_URI = 'https://discord.com/api/v8/';
-
     /**
      * Array of options for the client.
      *

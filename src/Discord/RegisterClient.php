@@ -50,7 +50,7 @@ class RegisterClient
     public function __construct(string $token)
     {
         $this->http = new GuzzleClient([
-            'base_uri' => Client::API_BASE_URI,
+            'base_uri' => 'https://discord.com/api/v8/',
             'headers' => [
                 'User-Agent' => $this->getUserAgent(),
                 'Authorization' => 'Bot '.$token,

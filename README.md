@@ -131,49 +131,7 @@ $client->run();
 Please note that you must always acknowledge the interaction within 3 seconds, otherwise Discord will cancel the interaction.
 If you are going to do something that takes time, call the `acknowledge()` function and then add a follow up message using `sendFollowUpMessage()` when ready.
 
-This library only handles slash commands, and there is no support for any other interactions with Discord such as creating channels, sending other messages etc. You can easily combine the DiscordPHP library with this library to have a much larger collection of tools. All you must do is ensure both clients share the same ReactPHP event loop. Here is an example:
-
-```php
-<?php
-
-include 'vendor/autoload.php';
-
-// make sure you have included DiscordPHP into your project - `composer require team-reflex/discord-php`
-
-use Discord\Discord;
-use Discord\Slash\Client;
-use Discord\Slash\Parts\Interaction;
-use Discord\Slash\Parts\Choices;
-
-$discord = new Discord([
-    'token' => '##################',
-]);
-
-$client = new Client([
-    'public_key' => '???????????????',
-    'loop' =>  $discord->getLoop(),
-]);
-
-$client->linkDiscord($discord); // we still want to use the HTTP server
-
-$discord->on('ready', function (Discord $discord) {
-    // DiscordPHP is ready
-});
-
-$client->registerCommand('my_cool_command', function (Interaction $interaction, Choices $choices) use ($discord) {
-    // there are a couple fields in $interaction that will return DiscordPHP parts:
-    $interaction->guild;
-    $interaction->channel;
-    $interaction->member;
-
-    // if you don't link DiscordPHP, it will simply return raw arrays
-
-    $discord->guilds->get('id', 'coolguild')->members->ban(); // do something ?
-    $interaction->acknowledge();
-});
-
-$discord->run();
-```
+This library only handles slash commands, and there is no support for any other interactions with Discord such as creating channels, sending other messages etc.
 
 ### Running behing PHP-CGI/PHP-FPM
 
