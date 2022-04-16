@@ -11,6 +11,7 @@
 
 namespace Discord\Slash\Parts;
 
+use ArrayAccess;
 use JsonSerializable;
 
 /**
@@ -18,19 +19,27 @@ use JsonSerializable;
  *
  * @author David Cole <david.cole1340@gmail.com>
  */
-class Part implements JsonSerializable
+class Part implements ArrayAccess, JsonSerializable
 {
+    /**
+     * Custom script data.
+     * Used for storing custom information, used by end products.
+     *
+     * @var mixed
+     */
+    public $scriptData;
+
     /**
      * Array of fillable fields.
      *
-     * @var array
+     * @var array The array of attributes that can be mass-assigned.
      */
     protected $fillable = [];
 
     /**
      * Array of attributes.
      *
-     * @var array
+     * @var array The parts attributes and content.
      */
     protected $attributes;
 
@@ -52,6 +61,56 @@ class Part implements JsonSerializable
     public function getAttributes(): array
     {
         return $this->attributes;
+    }
+
+    /**
+     * Gets an attribute via key. Used for ArrayAccess.
+     *
+     * @param string $key The attribute key.
+     *
+     * @return mixed
+     *
+     * @throws \Exception
+     */
+    #[\ReturnTypeWillChange]
+    public function offsetGet($key)
+    {
+        return $this->__get($key);
+    }
+
+    /**
+     * Checks if an attribute exists via key. Used for ArrayAccess.
+     *
+     * @param string $key The attribute key.
+     *
+     * @return bool Whether the offset exists.
+     */
+    public function offsetExists($key): bool
+    {
+        return isset($this->attributes[$key]);
+    }
+
+    /**
+     * Sets an attribute via key. Used for ArrayAccess.
+     *
+     * @param string $key   The attribute key.
+     * @param mixed  $value The attribute value.
+     */
+    public function offsetSet($key, $value): void
+    {
+        $this->__set($key, $value);
+    }
+
+    /**
+     * Unsets an attribute via key. Used for ArrayAccess.
+     *
+     * @param string $key The attribute key.
+     */
+    public function offsetUnset($key): void
+    {
+        if (isset($this->attributes[$key])) {
+            unset($this->attributes[$key]);
+        }
     }
 
     /**
