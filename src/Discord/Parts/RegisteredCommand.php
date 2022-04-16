@@ -77,8 +77,9 @@ class RegisteredCommand
         }
 
         if (! is_null($this->callback)) {
-            $this->logger->info('calling command callback', $interaction);
+            error_log('calling command callback');
             ($this->callback)($interaction, new Choices($options));
+            error_log('called command callback');
 
             return true;
         }
