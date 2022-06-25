@@ -2,7 +2,7 @@
 
 PHP server and client for Discord slash commands. Please read the [Discord slash command documentation](https://discord.com/developers/docs/interactions/slash-commands) before using this library.
 
-> **If you are already using [DiscordPHP](https://github.com/discord-php/DiscordPHP) v7+ you do not need this DiscordPHP-Slash library**
+> **If you are already using [DiscordPHP](https://github.com/discord-php/DiscordPHP) v7+ you DO NOT need this DiscordPHP-Slash library**
 
 ## Warning
 
