@@ -146,7 +146,7 @@ class Interaction extends Part
     }
 
     /**
-     * @deprecated 2.0.0 Interaction::reply()
+     * @deprecated v2.0.0 Interaction::reply()
      */
     public function replyWithSource(string $content, bool $tts = false, ?array $embeds = null, ?array $allowed_mentions = null, ?int $flags = null)
     {
@@ -199,7 +199,7 @@ class Interaction extends Part
     }
 
     /**
-     * @deprecated 2.0.0 Interaction::updateOriginalResponse()
+     * @deprecated v2.0.0 Interaction::updateOriginalResponse()
      */
     public function updateInitialResponse(?string $content = null, ?array $embeds = null, ?array $allowed_mentions = null)
     {
