@@ -12,7 +12,7 @@
 namespace Discord\Slash\Enums;
 
 /**
- * @link https://discord.com/developers/docs/interactions/slash-commands#applicationcommandoptiontype
+ * @link https://discord.com/developers/docs/interactions/application-commands#application-command-object-application-command-option-type
  * @author David Cole <david.cole1340@gmail.com>
  */
 final class ApplicationCommandOptionType
@@ -25,4 +25,7 @@ final class ApplicationCommandOptionType
     public const USER = 6;
     public const CHANNEL = 7;
     public const ROLE = 8;
+    public const MENTIONABLE = 9;
+    public const NUMBER = 10;
+    public const ATTACHMENT = 11;
 }
