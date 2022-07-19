@@ -154,6 +154,18 @@ class Interaction extends Part
     }
 
     /**
+     * Retrieves the original interaction response.
+     *
+     * @see https://discord.com/developers/docs/interactions/receiving-and-responding#get-original-interaction-response
+     *
+     * @return ExtendedPromiseInterface
+     */
+    public function getOriginalResponse(): ExtendedPromiseInterface
+    {
+        return $this->http->get(\Discord\Http\Endpoint::bind(\Discord\Http\Endpoint::ORIGINAL_INTERACTION_RESPONSE, $this->application_id, $this->token));
+    }
+
+    /**
      * Updates the original response to the interaction.
      * Must have already used `Interaction::reply()`.
      *
@@ -268,6 +280,20 @@ class Interaction extends Part
         }
 
         return $this->http->patch(\Discord\Http\Endpoint::bind(\Discord\Http\Endpoint::INTERACTION_FOLLOW_UP, $this->application_id, $this->token, $message_id), $message);
+    }
+
+    /**
+     * Retrieves a non ephemeral follow up message.
+     *
+     * @see https://discord.com/developers/docs/interactions/receiving-and-responding#get-followup-message
+     *
+     * @param string $message_id Message to get.
+     *
+     * @return ExtendedPromiseInterface
+     */
+    public function getFollowUpMessage(string $message_id): ExtendedPromiseInterface
+    {
+        return $this->http->get(\Discord\Http\Endpoint::bind(\Discord\Http\Endpoint::INTERACTION_FOLLOW_UP, $this->application_id, $this->token, $message_id));
     }
 
     /**
