@@ -64,13 +64,6 @@ class Interaction extends Part
     protected $resolve;
 
     /**
-     * Whether we have responded to the interaction yet.
-     *
-     * @var bool
-     */
-    protected $responded = false;
-
-    /**
      * HTTP instance.
      *
      * @var \Discord\Http\Http|null
@@ -113,8 +106,6 @@ class Interaction extends Part
             'type' => InteractionResponseType::DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE,
             'data' => $ephemeral ? ['flags' => InteractionResponseFlags::EPHEMERAL] : []
         ]);
-
-        $this->responded = true;
     }
 
     /**
@@ -150,8 +141,6 @@ class Interaction extends Part
             'type' => InteractionResponseType::CHANNEL_MESSAGE_WITH_SOURCE,
             'data' => $response,
         ]);
-
-        $this->responded = true;
     }
 
     /**
